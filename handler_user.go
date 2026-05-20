@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"github.com/SaujanyaMagarde/go-server/internal/database"
 	"github.com/google/uuid"
 	"time"
+	"github.com/SaujanyaMagarde/go-server/internal/auth"
 )
 
 func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request){
@@ -36,5 +36,23 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	respondWithJson(w,200,user)
+	respondWithJson(w,200,databaseUserToUser(user));
+}
+
+func (apiCfg *apiConfig) handlerGetUserByApikey(w http.ResponseWriter, r *http.Request){
+	api_key , err := auth.GetAPIKey(r.Header);
+
+	if err != nil{
+		respondWithError(w,400,"Invalid api key")
+		return
+	}
+
+	user,err := apiCfg.DB.GetUserByApiKey(r.Context(),api_key)
+
+	if err != nil{
+		respondWithError(w,400,"failed to find user")
+		return
+	}
+
+	respondWithJson(w,200,databaseUserToUser(user));
 }
