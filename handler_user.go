@@ -6,7 +6,6 @@ import (
 	"github.com/SaujanyaMagarde/go-server/internal/database"
 	"github.com/google/uuid"
 	"time"
-	"github.com/SaujanyaMagarde/go-server/internal/auth"
 )
 
 func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request){
@@ -39,20 +38,6 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 	respondWithJson(w,200,databaseUserToUser(user));
 }
 
-func (apiCfg *apiConfig) handlerGetUserByApikey(w http.ResponseWriter, r *http.Request){
-	api_key , err := auth.GetAPIKey(r.Header);
-
-	if err != nil{
-		respondWithError(w,400,"Invalid api key")
-		return
-	}
-
-	user,err := apiCfg.DB.GetUserByApiKey(r.Context(),api_key)
-
-	if err != nil{
-		respondWithError(w,400,"failed to find user")
-		return
-	}
-
+func (apiCfg *apiConfig) handlerGetUserByApikey(w http.ResponseWriter, r *http.Request , user database.User){
 	respondWithJson(w,200,databaseUserToUser(user));
 }
