@@ -63,6 +63,9 @@ func main(){
 	v1Router.Get("/error", handlerErr)
 	v1Router.Post("/users", apiCfg.handlerCreateUser);
 	v1Router.Get("/users", apiCfg.middelwareAuth(apiCfg.handlerGetUserByApikey));
+	v1Router.Post("/createfeed",apiCfg.middelwareAuth(apiCfg.handlerCreateFeed));
+	v1Router.Get("/getfeeds",apiCfg.middelwareAuth(apiCfg.handlerGetFeeds));
+	v1Router.Get("/getfeed",apiCfg.middelwareAuth(apiCfg.handlerGetFeedByID));
 
 	router.Mount("/v1", v1Router)
 
