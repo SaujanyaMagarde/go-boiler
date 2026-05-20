@@ -66,7 +66,8 @@ func main(){
 	v1Router.Post("/createfeed",apiCfg.middelwareAuth(apiCfg.handlerCreateFeed));
 	v1Router.Get("/getfeeds",apiCfg.middelwareAuth(apiCfg.handlerGetFeeds));
 	v1Router.Get("/getfeed",apiCfg.middelwareAuth(apiCfg.handlerGetFeedByID));
-
+	v1Router.Post("/feed_follows",apiCfg.middelwareAuth(apiCfg.handlerCreateFeedFollow));
+	v1Router.Get("/feed_follows",apiCfg.middelwareAuth(apiCfg.handlerGetFeedFollows));
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
