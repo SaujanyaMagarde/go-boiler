@@ -2,6 +2,7 @@ package main
 
 import (
 	"time"
+
 	"github.com/SaujanyaMagarde/go-server/internal/database"
 	"github.com/google/uuid"
 )
@@ -79,3 +80,39 @@ func databaseFeedFollowsToFeedFollows(dbFeedFollows []database.FeedFollow) []Fee
 	return feedFollows
 }
 
+type Post struct {
+	ID          uuid.UUID `json:"id"`
+	Title       string    `json:"title"`
+	Description *string `json:"description"`
+	PublishedAt time.Time `json:"published_at"`
+	Url         string    `json:"url"`
+	FeedID      uuid.UUID `json:"feed_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+func databasePostToPost(dbPost database.Post) Post {
+	return Post{
+		ID:        dbPost.ID,
+		CreatedAt: dbPost.CreatedAt,
+		UpdatedAt: dbPost.UpdatedAt,
+		Title:     dbPost.Title,
+		Description: func() *string {
+			if dbPost.Description.Valid {
+				return &dbPost.Description.String
+			}
+			return nil
+		}(),
+		PublishedAt: dbPost.PublishedAt,
+		Url:         dbPost.Url,
+		FeedID:      dbPost.FeedID,
+	}
+}
+
+func databasePostsToPosts(dbPosts []database.Post) []Post {
+	posts := make([]Post, len(dbPosts))
+	for i, dbPost := range dbPosts {
+		posts[i] = databasePostToPost(dbPost)
+	}
+	return posts
+}

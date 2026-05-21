@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"github.com/SaujanyaMagarde/go-server/internal/database"
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"time"
 )
@@ -47,4 +48,24 @@ func (apiCfg *apiConfig) handlerGetFeedFollows(w http.ResponseWriter, r *http.Re
 	}
 
 	respondWithJson(w,200,databaseFeedFollowsToFeedFollows(feed_follows));
+}
+
+func (apiCfg *apiConfig) handlerDeleteFeedFollow(w http.ResponseWriter, r *http.Request , user database.User){
+	feedFollowIDStr := chi.URLParam(r,"feedFollowID")
+
+	feedFollowID,err := uuid.Parse(feedFollowIDStr)
+	if err != nil{
+		respondWithError(w,400,"invalid feed follow id")
+		return
+	}
+
+	err = apiCfg.DB.DeleteFeedFollows(r.Context(),database.DeleteFeedFollowsParams{
+		ID: feedFollowID,
+		UserID: user.ID,
+	})
+	if err != nil{
+		respondWithError(w,400,"failed to delete feed follow")
+		return
+	}
+	respondWithJson(w,200,"feed follow deleted")
 }
