@@ -20,12 +20,16 @@ func startScrapping(
 	log.Printf("Scrapping on %v goroutine every %s duration", concurrency, timeBetweenRequest)
 
 	ticker := time.NewTicker(timeBetweenRequest)
+	//made a channel which give you tick after 60 sec 
 
 	for ; ; <-ticker.C {
 		feeds, err := db.GetNextFeedsToFetch(
 			context.Background(),
 			int32(concurrency),
 		)
+		//context.Background() is Go's way of saying, 
+		//"This is a blank context.
+		//Just let the database query run until it finishes."
 
 		if err != nil {
 			log.Printf("error fetching feeds %v", err)
